@@ -10,7 +10,7 @@
 Module.register("MMM-CountUP", {
   defaults: {
     header: 'Days passed since COVID19 Quarantine',
-    date: "2020-03-21", // YYYY-MM-DD
+    date: '2020-03-21', // YYYY-MM-DD
     time: '00:00:00', // HH:MM:SS
   },
 
