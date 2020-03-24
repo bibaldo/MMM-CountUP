@@ -1,0 +1,16 @@
+.countUP {
+  text-align: center;
+}
+
+.countUP tr td {
+  width: 2em;
+}
+
+.countUP tr td.digits {
+  color: #ee5486;
+}
+
+.countUP tr.textsRow {
+  font-size: 19px;
+  color: #FFF;
+}
