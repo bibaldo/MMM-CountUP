@@ -20,7 +20,7 @@ git clone https://github.com/bibaldo/MMM-CountUP.git
 Add the module to the modules array in the `config/config.js` file:
 ````javascript
   {
-    module: 'MMM-CountUP'
+    module: "MMM-CountUP"
   },
 ````
 
@@ -34,12 +34,13 @@ The following properties can be configured:
 | `header`                     | The header text <br><br> **Default value:** `'Days passed since COVID19 Quarantine'`
 | `date`                       | Start date <br> **Format:** `YYYY-MM-DD`
 | `time`                       | Start time <br> **Format:** `HH:MM:SS`
+| `showFullDate`               | Show or not a full date with years, months, weeeks, etc <br><br>**Default value:** `false`
 
 ## Config Example
 
 ````javascript
   {
-    module: 'MMM-COVID19',
+    module: "MMM-CountUP",
     config: {
       header: 'Days passed since COVID19 Quarantine',
       date: '2020-03-21',
