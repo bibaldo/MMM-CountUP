@@ -10,8 +10,9 @@
 Module.register("MMM-CountUP", {
   defaults: {
     header: 'Days passed since COVID19 Quarantine',
-    date: '2020-03-21', // YYYY-MM-DD
+    date: '2020-03-20', // YYYY-MM-DD
     time: '00:00:00', // HH:MM:SS
+    showFullDate : false
   },
 
   getStyles: function() {
@@ -33,44 +34,42 @@ Module.register("MMM-CountUP", {
   },
 
   getDom: function() {
-    var startDate = this.config.date.split('-'),
-        startYear = startDate[0],
-        startMonth = startDate[1],
-        startDay = startDate[2]
-    var startTime = this.config.time.split(':'),
-        startHour = startTime[0],
-        startMinute = startTime[1],
-        startSecond = startTime[2]
-
-    var start = new Date(startYear, startMonth - 1 , startDay, startHour, startMinute, startSecond)
-    var now = new Date()
-
-    var seconds = Math.floor(((now) - start)/1000)
-    var minutes = Math.floor(seconds/60)
-    var hours = Math.floor(minutes/60)
-    var days = Math.floor(hours/24)
-    
-    hours = hours-(days*24)
-    minutes = minutes-(days*24*60)-(hours*60)
-    seconds = seconds-(days*24*60*60)-(hours*60*60)-(minutes*60)
+    var startDate = new Date(this.config.date + ' ' + this.config.time)
+    // milliseconds since start timedate
+    var timestamp = startDate.getTime()
+    // difference between timestamp and now
+    var datesDifference = this.dateDiff(timestamp)
 
     var wrapper = document.createElement("table")
     wrapper.className = 'countUP'
 
     var infoRow = document.createElement("tr")
-    var daysWrapper = document.createElement("td")
+
+    var yearsWrapper = document.createElement("td"),
+        monthsWrapper = document.createElement("td"),
+        weeksWrapper = document.createElement("td"),
+        daysWrapper = document.createElement("td"),
+        hoursWrapper = document.createElement("td"),
+        minutesWrapper = document.createElement("td"),
+        secondsWrapper = document.createElement("td");
+
+    yearsWrapper.innerHTML = datesDifference.year
+    yearsWrapper.className = 'digits'
+    monthsWrapper.innerHTML = datesDifference.month
+    monthsWrapper.className = 'digits'
+    weeksWrapper.innerHTML = datesDifference.week
+    weeksWrapper.className = 'digits'
+    daysWrapper.innerHTML = datesDifference.day
     daysWrapper.className = 'digits'
-    var hoursWrapper = document.createElement("td")
+    hoursWrapper.innerHTML = datesDifference.hour
     hoursWrapper.className = 'digits'
-    var minutesWrapper = document.createElement("td")
+    minutesWrapper.innerHTML = datesDifference.minute
     minutesWrapper.className = 'digits'
-    var secondsWrapper = document.createElement("td")
+    secondsWrapper.innerHTML = datesDifference.second
 
-    daysWrapper.innerHTML = days
-    hoursWrapper.innerHTML = hours
-    minutesWrapper.innerHTML = minutes
-    secondsWrapper.innerHTML = seconds
-
+    infoRow.appendChild(yearsWrapper)
+    infoRow.appendChild(monthsWrapper)
+    infoRow.appendChild(weeksWrapper)
     infoRow.appendChild(daysWrapper)
     infoRow.appendChild(hoursWrapper)
     infoRow.appendChild(minutesWrapper)
@@ -80,24 +79,69 @@ Module.register("MMM-CountUP", {
 
     var textsRow = document.createElement("tr")
     textsRow.className = 'textsRow'
-    var textDaysWrapper = document.createElement("td")
-    var textHoursWrapper = document.createElement("td")
-    var textMinutesWrapper = document.createElement("td")
-    var textSecondsWrapper = document.createElement("td")
 
+    var textYearsWrapper = document.createElement("td"),
+        textMonthsWrapper = document.createElement("td"),
+        textWeeksWrapper = document.createElement("td"),
+        textDaysWrapper = document.createElement("td"),
+        textHoursWrapper = document.createElement("td"),
+        textMinutesWrapper = document.createElement("td"),
+        textSecondsWrapper = document.createElement("td");
+
+    textYearsWrapper.innerHTML = 'YEARS'
+    textMonthsWrapper.innerHTML = 'MONTHS'
+    textWeeksWrapper.innerHTML = 'WEEKS'
     textDaysWrapper.innerHTML = 'DAYS'
     textHoursWrapper.innerHTML = 'HOURS'
     textMinutesWrapper.innerHTML = 'MINUTES'
     textSecondsWrapper.innerHTML = 'SECONDS'
 
+    textsRow.appendChild(textYearsWrapper)
+    textsRow.appendChild(textMonthsWrapper)
+    textsRow.appendChild(textWeeksWrapper)  
     textsRow.appendChild(textDaysWrapper)
     textsRow.appendChild(textHoursWrapper)
     textsRow.appendChild(textMinutesWrapper)
     textsRow.appendChild(textSecondsWrapper)
 
     wrapper.appendChild(textsRow)
+    
+    if (!this.config.showFullDate || datesDifference.year == 0 ) {
+      yearsWrapper.className += ' none'
+      textYearsWrapper.className += ' none'
+    }
+    if (!this.config.showFullDate || datesDifference.month == 0 ) {
+      monthsWrapper.className += ' none'
+      textMonthsWrapper.className += ' none'
+    }
+    if (!this.config.showFullDate || datesDifference.week == 0 ) {
+      weeksWrapper.className += ' none'
+      textWeeksWrapper.className += ' none'
+    }
 
     return wrapper  
+  },
+
+  dateDiff: function (timestamp) {
+    let structure = {
+      year: 31536000,
+      month: 2592000,
+      week: 604800,
+      day: 86400,
+      hour: 3600,
+      minute: 60,
+      second: 1
+    }
+    
+    let delta = Math.abs(timestamp - new Date().getTime()) / 1000
+    let res = {}
+
+    for(let key in structure) {
+        res[key] = Math.floor(delta / structure[key])
+        delta -= res[key] * structure[key]
+    }
+
+    return res
   }
 
 })
