@@ -137,8 +137,11 @@ Module.register("MMM-CountUP", {
     let res = {}
 
     for(let key in structure) {
+      if(this.config.showFullDate==true || (key !='month' && key !='week') )
+        {
         res[key] = Math.floor(delta / structure[key])
         delta -= res[key] * structure[key]
+      } 
     }
 
     return res
