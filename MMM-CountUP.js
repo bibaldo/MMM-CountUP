@@ -12,7 +12,8 @@ Module.register("MMM-CountUP", {
     header: 'Days passed since COVID19 Quarantine',
     date: '2020-03-20', // YYYY-MM-DD
     time: '00:00:00', // HH:MM:SS
-    showFullDate : false
+    showFullDate : false,
+    showOnlyWeeks: false
   },
 
   getStyles: function() {
@@ -106,20 +107,32 @@ Module.register("MMM-CountUP", {
 
     wrapper.appendChild(textsRow)
     
-    if (!this.config.showFullDate || datesDifference.year == 0 ) {
+    if (this.config.showOnlyWeeks || !this.config.showFullDate || datesDifference.year == 0 ) {
       yearsWrapper.className += ' none'
       textYearsWrapper.className += ' none'
     }
-    if (!this.config.showFullDate || datesDifference.month == 0 ) {
+    if (this.config.showOnlyWeeks || !this.config.showFullDate || datesDifference.month == 0 ) {
       monthsWrapper.className += ' none'
       textMonthsWrapper.className += ' none'
     }
+    
+    if (this.config.showOnlyWeeks) { // hide hours, minutes and seconds, then finish
+      hoursWrapper.className += ' none'
+      textHoursWrapper.className += ' none'
+      minutesWrapper.className += ' none'
+      textMinutesWrapper.className += ' none'
+      secondsWrapper.className += ' none'
+      textSecondsWrapper.className += ' none'
+
+      return wrapper
+    }
+
     if (!this.config.showFullDate || datesDifference.week == 0 ) {
       weeksWrapper.className += ' none'
       textWeeksWrapper.className += ' none'
     }
 
-    return wrapper  
+    return wrapper
   },
 
   dateDiff: function (timestamp) {
@@ -136,12 +149,17 @@ Module.register("MMM-CountUP", {
     let delta = Math.abs(timestamp - new Date().getTime()) / 1000
     let res = {}
 
+    if (this.config.showOnlyWeeks) {
+      delete structure['year']
+      delete structure['month']
+    } else if (!this.config.showFullDate) {
+      delete structure['year']
+      delete structure['month']
+      delete structure['week']
+    }
     for(let key in structure) {
-      if(this.config.showFullDate==true || (key !='month' && key !='week') )
-        {
-        res[key] = Math.floor(delta / structure[key])
-        delta -= res[key] * structure[key]
-      } 
+      res[key] = Math.floor(delta / structure[key])
+      delta -= res[key] * structure[key]
     }
 
     return res
