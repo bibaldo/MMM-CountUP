@@ -35,6 +35,7 @@ The following properties can be configured:
 | `date`                       | Start date <br> **Format:** `YYYY-MM-DD`
 | `time`                       | Start time <br> **Format:** `HH:MM:SS`
 | `showFullDate`               | Show or not a full date with years, months, weeeks, etc <br><br>**Default value:** `false`
+| `showOnlyWeeks`              | Show or not date with weeeks and days only <br><br>**Default value:** `false`
 
 ## Config Example
 
@@ -43,7 +44,7 @@ The following properties can be configured:
     module: "MMM-CountUP",
     config: {
       header: 'Days passed since COVID19 Quarantine',
-      date: '2020-03-21',
+      date: '2020-03-20',
       time: '00:00:00'
     }
   },
